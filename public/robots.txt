@@ -1,0 +1,8 @@
+User-agent: *
+Crawl-delay: 5
+Disallow: /cms/
+Disallow: /cms/*
+Disallow: /*jpg$
+Disallow: /*png$
+Disallow: /*svg$
+Sitemap: https://www.lazzie.shop/sitemap.xml

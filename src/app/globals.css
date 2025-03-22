@@ -9,6 +9,18 @@
   --background: #0a0a0a;
   --foreground: #ededed;
 }
+.bg-primary {
+  background-color: #f0d0b3;
+}
+.bg-secondary {
+  background-color: #4b2e1e;
+}
+.text-primary {
+  color: #f0d0b3;
+}
+.text-secondary {
+  color: #4b2e1e;
+}
 
 body {
   background: var(--background);
