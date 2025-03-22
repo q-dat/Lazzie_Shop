@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import Image from 'next/image';
 
 interface Variant {
   id: string;
@@ -79,12 +80,14 @@ export default function ProductPage() {
 
       <div>
         {selectedVariant && (
-          <img
+          <Image
             src={hovered ? selectedVariant.thumbnail : selectedVariant.image}
-            alt={product?.name}
+            alt={product?.name || 'Product image'}
+            width={200} // Thay vì style
+            height={200} // Thay vì style
+            style={{ objectFit: 'cover' }}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
-            style={{ width: 200, height: 200, objectFit: 'cover' }}
           />
         )}
       </div>
