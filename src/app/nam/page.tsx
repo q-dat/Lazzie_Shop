@@ -81,7 +81,7 @@ export default function ProductPage() {
               <div className="mt-2 flex space-x-2">
                 {variants.map((variant) => (
                   <button
-                    key={variant.color}
+                    key={variant._id}
                     onClick={() => setSelectedColors({ ...selectedColors, [productName]: variant.color })}
                     className={`w-6 h-6 rounded-full border-2 ${
                       selectedColor === variant.color ? 'border-blue-500' : 'border-gray-300'
