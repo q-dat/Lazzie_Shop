@@ -3,7 +3,7 @@ import mongoose, { Connection } from 'mongoose';
 const MONGO_URI = process.env.MONGODB_URI as string;
 
 if (!MONGO_URI) {
-  throw new Error('⚠️ Thiếu MONGODB_URI trong biến môi trường!');
+  throw new Error('⚠️ MONGODB_URI is missing in environment variables!');
 }
 
 interface MongooseCache {
@@ -12,6 +12,7 @@ interface MongooseCache {
 }
 
 declare global {
+  // eslint-disable-next-line no-var
   var mongooseCache: MongooseCache | undefined;
 }
 
@@ -24,7 +25,7 @@ export async function connectDB(): Promise<Connection> {
   }
 
   if (!cached.promise) {
-    console.log('Đang kết nối tới MongoDB...');
+    console.log('Đang kết nối đến MongoDB...');
     cached.promise = mongoose
       .connect(MONGO_URI, {
         dbName: 'quocdatstore79',
