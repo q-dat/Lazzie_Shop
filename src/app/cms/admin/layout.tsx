@@ -1,3 +1,7 @@
+import Sidebar from "@/components/adminLayout/Sidebar";
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return <div>{children}</div>;
+  return <div>
+    <Sidebar/>
+    {children}</div>;
 }

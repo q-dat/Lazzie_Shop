@@ -15,7 +15,7 @@ const menuItems: MenuItem[] = [
   },
   {
     name: 'Nam',
-    link: '/vi-nam',
+    link: '/nam',
   },
   //   {
   //     name: "",
