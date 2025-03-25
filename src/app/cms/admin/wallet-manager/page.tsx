@@ -113,7 +113,6 @@ export default function WalletManager() {
             <Image src={previewThumbnail} alt="Xem trước ảnh phụ" layout="fill" objectFit="cover" className="rounded-md border" />
           </div>
         )}
-
         <button type="submit" className="bg-blue-500 px-4 py-2 text-white">
           {editingWallet ? 'Cập nhật ví' : 'Tạo ví'}
         </button>
@@ -138,8 +137,10 @@ export default function WalletManager() {
           <li key={wallet._id} className="mt-2 flex flex-col space-y-2 border p-2">
             <strong>{wallet.name}</strong> - {wallet.color} - {wallet.quantity} - {wallet.price} VND
             <div className="flex space-x-4">
-              <Image src={wallet.image} alt="Ảnh chính" width={128} height={128} objectFit="cover" className="rounded-md border" />
-              <Image src={wallet.thumbnail} alt="Ảnh phụ" width={128} height={128} objectFit="cover" className="rounded-md border" />
+              {wallet.image && <Image src={wallet.image} alt="Ảnh chính" width={128} height={128} objectFit="cover" className="rounded-md border" />}
+              {wallet.thumbnail && (
+                <Image src={wallet.thumbnail} alt="Ảnh phụ" width={128} height={128} objectFit="cover" className="rounded-md border" />
+              )}
             </div>
             <div className="flex space-x-2">
               <button onClick={() => handleEdit(wallet)} className="bg-yellow-500 px-3 py-1 text-white">

@@ -22,34 +22,36 @@ export async function POST(req: NextRequest) {
     const mainFile = formData.get('image') as Blob | null;
     const thumbFile = formData.get('thumbnail') as Blob | null;
 
-    if (!mainFile || !thumbFile) {
-      return NextResponse.json({ success: false, message: 'Ảnh chính hoặc ảnh phụ không hợp lệ' }, { status: 400 });
+    if (!mainFile) {
+      return NextResponse.json({ success: false, message: 'Ảnh chính không hợp lệ' }, { status: 400 });
     }
 
-    // Convert file thành Base64
+    // Convert ảnh chính sang Base64
     const mainBuffer = Buffer.from(await mainFile.arrayBuffer());
-    const thumbBuffer = Buffer.from(await thumbFile.arrayBuffer());
-
     const mainBase64 = `data:${mainFile.type};base64,${mainBuffer.toString('base64')}`;
-    const thumbBase64 = `data:${thumbFile.type};base64,${thumbBuffer.toString('base64')}`;
 
     // 📌 **Upload ảnh chính với resize và WebP**
     const mainUpload = await cloudinary.uploader.upload(mainBase64, {
       folder: 'wallets/main',
-      format: 'webp', // Chuyển sang định dạng WebP
-      transformation: [
-        { width: 300, height: 300, crop: 'fill' }, // Resize ảnh chính
-      ],
+      format: 'webp',
+      transformation: [{ width: 300, height: 300, crop: 'fill' }],
     });
 
-    // 📌 **Upload ảnh phụ với resize và WebP**
-    const thumbUpload = await cloudinary.uploader.upload(thumbBase64, {
-      folder: 'wallets/thumbnails',
-      format: 'webp', // Chuyển sang định dạng WebP
-      transformation: [
-        { width: 300, height: 300, crop: 'thumb' }, // Resize ảnh thumbnail
-      ],
-    });
+    let thumbUrl = null;
+    if (thumbFile) {
+      // Convert ảnh phụ sang Base64
+      const thumbBuffer = Buffer.from(await thumbFile.arrayBuffer());
+      const thumbBase64 = `data:${thumbFile.type};base64,${thumbBuffer.toString('base64')}`;
+
+      // 📌 **Upload ảnh phụ với resize và WebP**
+      const thumbUpload = await cloudinary.uploader.upload(thumbBase64, {
+        folder: 'wallets/thumbnails',
+        format: 'webp',
+        transformation: [{ width: 300, height: 300, crop: 'thumb' }],
+      });
+
+      thumbUrl = thumbUpload.secure_url;
+    }
 
     // Lưu vào MongoDB
     const newWallet = new Wallet({
@@ -59,7 +61,7 @@ export async function POST(req: NextRequest) {
       quantity: formData.get('quantity'),
       price: Number(formData.get('price')),
       image: mainUpload.secure_url, // Ảnh chính (WebP)
-      thumbnail: thumbUpload.secure_url, // Ảnh phụ (WebP)
+      thumbnail: thumbUrl, // Ảnh phụ (WebP) nếu có
     });
 
     await newWallet.save();

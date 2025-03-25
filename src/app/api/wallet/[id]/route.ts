@@ -10,56 +10,6 @@ const getIdFromUrl = (req: NextRequest): string | null => {
   const id = paths[paths.length - 1];
   return mongoose.Types.ObjectId.isValid(id) ? id : null;
 };
-
-// 📌 **GET: Lấy danh sách tất cả ví**
-export async function GET() {
-  try {
-    await connectDB();
-    const wallets = await Wallet.find();
-    return NextResponse.json({ message: 'Get all', success: true, data: wallets });
-  } catch (error) {
-    console.error('Lỗi:', error);
-    return NextResponse.json({ message: 'Lỗi khi lấy danh sách ví', success: false }, { status: 500 });
-  }
-}
-
-// 📌 **POST: Tạo ví mới**
-export async function POST(req: NextRequest) {
-  try {
-    await connectDB();
-    const formData = await req.formData();
-
-    const mainFile = formData.get('image') as Blob | null;
-    const thumbFile = formData.get('thumbnail') as Blob | null;
-
-    if (!mainFile || !thumbFile) {
-      return NextResponse.json({ success: false, message: 'Ảnh chính hoặc ảnh phụ không hợp lệ' }, { status: 400 });
-    }
-
-    // 📌 **Xử lý upload ảnh**
-    const mainUpload = await uploadToCloudinary(mainFile, 'wallets/main');
-    const thumbUpload = await uploadToCloudinary(thumbFile, 'wallets/thumbnails');
-
-    // 📌 **Lưu vào MongoDB**
-    const newWallet = new Wallet({
-      wallet_catalog_id: formData.get('wallet_catalog_id'),
-      name: formData.get('name'),
-      color: formData.get('color'),
-      quantity: formData.get('quantity'),
-      price: Number(formData.get('price')),
-      image: mainUpload.secure_url, // Ảnh chính (WebP)
-      thumbnail: thumbUpload.secure_url, // Ảnh phụ (WebP)
-    });
-
-    await newWallet.save();
-
-    return NextResponse.json({ message: 'Tạo ví thành công', success: true, data: newWallet });
-  } catch (error) {
-    console.error('Lỗi:', error);
-    return NextResponse.json({ message: 'Lỗi khi tạo ví', success: false }, { status: 500 });
-  }
-}
-
 // 📌 **PUT: Cập nhật thông tin ví (bao gồm cả ảnh)**
 export async function PUT(req: NextRequest) {
   try {

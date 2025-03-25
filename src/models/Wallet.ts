@@ -41,7 +41,7 @@ const WalletSchema = new Schema<Wallet>(
     quantity: { type: String },
     price: { type: Number, required: true },
     image: { type: String, required: true },
-    thumbnail: { type: String, required: true },
+    thumbnail: { type: String },
   },
   { timestamps: true }
 );

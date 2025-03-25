@@ -34,7 +34,7 @@ export default function ProductPage() {
     <div className="relative aspect-square" onMouseEnter={() => setHoveredId(selectedVariant._id)} onMouseLeave={() => setHoveredId(null)}>
       <Image
         src={hoveredId === selectedVariant._id ? selectedVariant.thumbnail : selectedVariant.image}
-        alt={selectedVariant.name || 'Image'}
+        alt={selectedVariant.name || 'Hình Ảnh'}
         fill
         priority
         className="h-full w-full object-cover"
