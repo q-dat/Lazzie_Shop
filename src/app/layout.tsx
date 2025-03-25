@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
+import { FavoriteProvider } from './context/FavoriteContext/FavoriteProvider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -14,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   icons: '/favicon.png',
-  title: 'Trang chủ Lazzie Shop',
+  title: 'Trang chủ - Ví da cao cấp - Lazzie Shop',
   description: 'Lazzie Shop - Ví name giá rẻ, chính hãng 100%',
   keywords: 'lazzie, ví nam chính hãng, lazzie shop',
 };
@@ -26,9 +27,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {children}
-      </body>
+      <FavoriteProvider>
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
+      </FavoriteProvider>
     </html>
   );
 }

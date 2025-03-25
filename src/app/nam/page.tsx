@@ -1,23 +1,17 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Image from 'next/image';
-
-interface Wallet {
-  _id: string;
-  name: string;
-  color: string;
-  size: string;
-  price: number;
-  image: string;
-  thumbnail: string;
-}
+import { IWallet } from '@/models/Wallet';
+import { FaRegHeart } from 'react-icons/fa';
+import { useFavorite } from '../context/FavoriteContext/FavoriteProvider';
+import { FaHeart } from 'react-icons/fa6';
 
 export default function ProductPage() {
-  const [wallets, setWallets] = useState<Wallet[]>([]);
+  const { favorites, toggleFavorite } = useFavorite();
+  const [wallets, setWallets] = useState<IWallet[]>([]);
   const [selectedColors, setSelectedColors] = useState<{ [key: string]: string }>({});
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
-  // Fetch toàn bộ danh sách ví
   useEffect(() => {
     fetch('/api/wallet')
       .then((res) => res.json())
@@ -29,62 +23,51 @@ export default function ProductPage() {
       .catch((error) => console.error('Lỗi khi lấy danh sách ví:', error));
   }, []);
 
-  // Nhóm sản phẩm theo tên để lấy các biến thể
-  const groupedProducts = wallets.reduce((acc: { [key: string]: Wallet[] }, wallet) => {
+  // Nhóm sản phẩm theo tên
+  const groupedProducts = wallets.reduce((acc: { [key: string]: IWallet[] }, wallet) => {
     if (!acc[wallet.name]) acc[wallet.name] = [];
     acc[wallet.name].push(wallet);
     return acc;
   }, {});
 
+  const renderImage = (selectedVariant: IWallet) => (
+    <div className="relative aspect-square" onMouseEnter={() => setHoveredId(selectedVariant._id)} onMouseLeave={() => setHoveredId(null)}>
+      <Image
+        src={hoveredId === selectedVariant._id ? selectedVariant.thumbnail : selectedVariant.image}
+        alt={selectedVariant.name || 'Image'}
+        fill
+        priority
+        className="h-full w-full object-cover"
+      />
+      <button className="absolute top-1 right-1 cursor-pointer text-lg" onClick={() => toggleFavorite(selectedVariant)}>
+        {favorites.some((fav) => fav._id === selectedVariant._id) ? <FaHeart className="text-red-500" /> : <FaRegHeart />}
+      </button>
+    </div>
+  );
+
   return (
-    <div className="p-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6">
       {Object.keys(groupedProducts).length > 0 ? (
-        Object.keys(groupedProducts).map((productName) => {
-          const variants = groupedProducts[productName];
+        Object.entries(groupedProducts).map(([productName, variants]) => {
           const selectedColor = selectedColors[productName] || variants[0].color;
           const selectedVariant = variants.find((v) => v.color === selectedColor) || variants[0];
-
-          console.log("selectedVariant:", selectedVariant); // Kiểm tra dữ liệu
-
           return (
-            <div key={productName} className="border p-2 rounded-md shadow-md">
-              {/* Hình ảnh sản phẩm */}
-              <div
-                className="relative w-full h-48"
-                onMouseEnter={() => setHoveredId(selectedVariant._id)}
-                onMouseLeave={() => setHoveredId(null)}
-              >
-                <Image
-                  src={
-                    hoveredId === selectedVariant._id
-                      ? selectedVariant?.thumbnail?.startsWith("http")
-                        ? selectedVariant.thumbnail
-                        : "/default-image.jpg"
-                      : selectedVariant?.image?.startsWith("http")
-                      ? selectedVariant.image
-                      : "/default-image.jpg"
-                  }
-                  alt={selectedVariant.name || "No image"}
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-md"
-                />
+            <div key={productName} className="grid grid-cols-1 justify-center gap-1 p-2 shadow">
+              <div>{renderImage(selectedVariant)}</div>
+              <div>
+                <h3 className="text-lg font-semibold">{selectedVariant.name}</h3>
+                <p className="text-gray-600">Màu: {selectedVariant.color}</p>
+                <p className="text-gray-600">Kích thước: {selectedVariant.size}</p>
+                <p className="font-bold text-red-500">Giá: {(selectedVariant.price * 1000).toLocaleString('vi-VN')}đ</p>
               </div>
-
-              {/* Thông tin sản phẩm */}
-              <h3 className="text-lg font-semibold mt-2">{selectedVariant.name}</h3>
-              <p className="text-gray-600">Màu: {selectedVariant.color}</p>
-              <p className="text-gray-600">Kích thước: {selectedVariant.size}</p>
-              <p className="text-red-500 font-bold">Giá: ${selectedVariant.price}</p>
-
               {/* Chọn màu */}
-              <div className="mt-2 flex space-x-2">
+              <div className="flex space-x-4">
                 {variants.map((variant) => (
                   <button
                     key={variant._id}
                     onClick={() => setSelectedColors({ ...selectedColors, [productName]: variant.color })}
-                    className={`w-6 h-6 rounded-full border-2 ${
-                      selectedColor === variant.color ? 'border-blue-500' : 'border-gray-300'
+                    className={`h-6 w-6 cursor-pointer rounded-full hover:scale-90 hover:outline hover:outline-offset-2 ${
+                      selectedColor === variant.color ? 'scale-90 outline outline-offset-2' : ''
                     }`}
                     style={{ backgroundColor: variant.color.toLowerCase() }}
                   />

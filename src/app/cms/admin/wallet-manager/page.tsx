@@ -1,37 +1,15 @@
 'use client';
-
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import Image from 'next/image';
-
-interface WalletFormData {
-  _id?: string;
-  wallet_catalog_id: string;
-  name: string;
-  color: string;
-  size: string;
-  price: number;
-  image: FileList; // Ảnh chính (file upload)
-  thumbnail: FileList; // Ảnh phụ (file upload)
-}
-
-interface Wallet {
-  _id: string;
-  wallet_catalog_id: string;
-  name: string;
-  color: string;
-  size: string;
-  price: number;
-  image: string; // URL ảnh chính
-  thumbnail: string; // URL ảnh phụ
-}
+import { IWallet, WalletFormData } from '@/models/Wallet';
 
 export default function WalletManager() {
   const { register, handleSubmit, reset, setValue, watch } = useForm<WalletFormData>();
-  const [wallets, setWallets] = useState<Wallet[]>([]);
+  const [wallets, setWallets] = useState<IWallet[]>([]);
   const [catalogs, setCatalogs] = useState<{ _id: string; name: string }[]>([]);
-  const [editingWallet, setEditingWallet] = useState<Wallet | null>(null);
+  const [editingWallet, setEditingWallet] = useState<IWallet | null>(null);
 
   // Lấy ảnh xem trước từ FileList
   const watchImage = watch('image');
@@ -61,10 +39,10 @@ export default function WalletManager() {
       formData.append('size', data.size);
       formData.append('price', data.price.toString());
 
-      if (data.image.length > 0) formData.append('image', data.image[0]); // Ảnh chính
-      if (data.thumbnail.length > 0) formData.append('thumbnail', data.thumbnail[0]); // Ảnh phụ
+      if (data.image.length > 0) formData.append('image', data.image[0]);
+      if (data.thumbnail.length > 0) formData.append('thumbnail', data.thumbnail[0]);
 
-      let res: { data: { data: Wallet } };
+      let res: { data: { data: IWallet } };
 
       if (editingWallet) {
         res = await axios.put(`/api/wallet/${editingWallet._id}`, formData, {
@@ -85,7 +63,7 @@ export default function WalletManager() {
     }
   };
 
-  const handleEdit = (wallet: Wallet) => {
+  const handleEdit = (wallet: IWallet) => {
     setEditingWallet(wallet);
     setValue('wallet_catalog_id', wallet.wallet_catalog_id);
     setValue('name', wallet.name);

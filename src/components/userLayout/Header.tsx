@@ -1,6 +1,5 @@
 'use client';
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -9,8 +8,11 @@ import { images } from '@/assets/images';
 import { HiLocationMarker, HiShoppingCart } from 'react-icons/hi';
 import { FaRegHeart } from 'react-icons/fa';
 import { IoLogoFacebook } from 'react-icons/io5';
+import { useFavorite } from '@/app/context/FavoriteContext/FavoriteProvider';
+
 export default function Header() {
   const pathname = usePathname();
+  const { favoriteCount } = useFavorite();
   const [activeItem, setActiveItem] = useState<string | null>(null);
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
 
@@ -22,9 +24,9 @@ export default function Header() {
   }, [pathname]);
 
   return (
-    <header className="xl:px-20 bg-primary text-secondary h-[140px] flex flex-col items-center justify-between w-full gap-1">
-      <section className="flex flex-row items-center justify-between w-full text-sm font-light">
-        <div className="flex items-center justify-start gap-2 w-1/3">
+    <header className="bg-primary text-secondary flex h-[140px] w-full flex-col items-center justify-between gap-1 xl:px-20">
+      <section className="flex w-full flex-row items-center justify-between text-sm font-light">
+        <div className="flex w-1/3 items-center justify-start gap-2">
           <Link href="https://www.facebook.com/lazzie.shop" target="__blank" className="flex items-center gap-1">
             <IoLogoFacebook className="text-lg" />
             Lazzie Shop
@@ -34,42 +36,44 @@ export default function Header() {
             Cửa Hàng
           </Link>
         </div>
-        <div className="w-1/3 flex justify-center">
+        <div className="flex w-1/3 justify-center">
           <Link href="/">
-            <Image src={images.Logo} alt="Logo" className="w-auto h-[80px]" priority />
+            <Image src={images.Logo} alt="Logo" className="h-[80px] w-auto" priority />
           </Link>
         </div>
-        <div className="flex items-center text-xl justify-end gap-2 w-1/3">
-          <input type="text" placeholder="Tìm kiếm" className=" placeholder:text-black focus:outline-none  text-sm font-light border-b w-[100px]" />
-          <Link href="/yeu-thich">
+        <div className="flex w-1/3 items-center justify-end gap-3 text-xl">
+          <input type="text" placeholder="Tìm kiếm" className="w-[100px] border-b text-sm font-light placeholder:text-black focus:outline-none" />
+          <Link href="/yeu-thich" className="relative">
             <FaRegHeart />
+            {favoriteCount > 0 && (
+              <span className="absolute -top-1 -right-2 rounded-full bg-red-700 px-[5px] text-[10px] font-light text-white">{favoriteCount}</span>
+            )}
           </Link>
           <Link href="/gio-hang">
             <HiShoppingCart />
           </Link>
         </div>
       </section>
-      <nav className="flex flex-row h-[60px] items-center gap-2">
+      <nav className="flex h-[60px] flex-row items-center gap-2">
         {menuItems.map((item) => (
           <div
             key={item.name}
-            className="relative group"
+            className="group relative"
             onMouseEnter={() => item.submenu && setOpenSubmenu(item.name)}
             onMouseLeave={() => setOpenSubmenu(null)}
           >
             <Link
               href={item.link}
-              className={`flex items-center justify-center p-2 rounded-md gap-1 transition-all ${activeItem === item.name ? 'bg-secondary text-primary' : 'hover:bg-white'}`}
+              className={`flex items-center justify-center gap-1 rounded-md p-2 transition-all ${activeItem === item.name ? 'bg-secondary text-primary' : 'hover:bg-white'}`}
             >
-              {item.icon && <item.icon className="w-5 h-5" />}
+              {item.icon && <item.icon className="h-5 w-5" />}
               <span>{item.name}</span>
             </Link>
-
             {item.submenu && openSubmenu === item.name && (
-              <div className="absolute left-0 w-48 bg-white text-black shadow-md rounded-md">
+              <div className="absolute left-0 w-48 rounded-md bg-white text-black shadow-md">
                 {item.submenu.map((sub, subIndex) => (
                   <Link key={subIndex} href={sub.link} className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100">
-                    {sub.icon && <sub.icon className="w-4 h-4" />}
+                    {sub.icon && <sub.icon className="h-4 w-4" />}
                     <span>{sub.name}</span>
                   </Link>
                 ))}

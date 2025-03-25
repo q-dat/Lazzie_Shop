@@ -1,6 +1,29 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-export interface IWallet extends Document {
+export interface WalletFormData {
+  _id?: string;
+  wallet_catalog_id: string;
+  name: string;
+  color: string;
+  size: string;
+  price: number;
+  image: FileList;
+  thumbnail: FileList;
+}
+
+export interface IWallet {
+  _id: string;
+  wallet_catalog_id: string;
+  name: string;
+  color: string;
+  size: string;
+  price: number;
+  image: string;
+  thumbnail: string;
+}
+
+export interface Wallet extends Document {
+  _id: string;
   wallet_catalog_id: mongoose.Types.ObjectId;
   name: string;
   color: string;
@@ -10,7 +33,7 @@ export interface IWallet extends Document {
   thumbnail: string;
 }
 
-const WalletSchema = new Schema<IWallet>(
+const WalletSchema = new Schema<Wallet>(
   {
     wallet_catalog_id: { type: Schema.Types.ObjectId, ref: 'WalletCatalog', required: true },
     name: { type: String, required: true },
@@ -23,4 +46,4 @@ const WalletSchema = new Schema<IWallet>(
   { timestamps: true }
 );
 
-export default mongoose.models.Wallet || mongoose.model<IWallet>('Wallet', WalletSchema);
+export default mongoose.models.Wallet || mongoose.model<Wallet>('Wallet', WalletSchema);
