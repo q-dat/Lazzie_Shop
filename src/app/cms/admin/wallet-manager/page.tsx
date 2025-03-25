@@ -94,7 +94,7 @@ export default function WalletManager() {
           ))}
         </select>
         <input {...register('name')} placeholder="Tên ví" className="border p-2 w-full" required />
-        <input {...register('color')} placeholder="Màu sắc" className="border p-2 w-full" required />
+        <input {...register('color')} placeholder="Số lượng" className="border p-2 w-full" required />
         <input {...register('quantity')} placeholder="Kích thước" className="border p-2 w-full" required />
         <input {...register('price')} type="number" placeholder="Giá" className="border p-2 w-full" required />
 
