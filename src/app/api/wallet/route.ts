@@ -3,11 +3,23 @@ import { connectDB } from '@/lib/mongodb';
 import Wallet from '@/models/Wallet';
 import cloudinary from '@/lib/cloudinary';
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     await connectDB();
-    const wallets = await Wallet.find();
-    return NextResponse.json({ message: 'Get all', success: true, data: wallets });
+
+    // Pagination
+    const { searchParams } = new URL(req.url);
+    const page = Number(searchParams.get('page')) || 1;
+    const limit = Number(searchParams.get('limit')) || 10;
+    const skip = (page - 1) * limit;
+
+    const wallets = await Wallet.find().select('name price color image thumbnail').skip(skip).limit(limit).lean();
+
+    // Cache Res (60s)
+    return NextResponse.json(
+      { message: 'Get all', success: true, data: wallets },
+      { headers: { 'Cache-Control': 's-maxage=60, stale-while-revalidate=30' } }
+    );
   } catch (error) {
     console.error('Lỗi:', error);
     return NextResponse.json({ message: 'Lỗi khi lấy danh sách ví', success: false }, { status: 500 });
