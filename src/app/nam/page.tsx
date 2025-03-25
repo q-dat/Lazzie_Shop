@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { IWallet } from '@/models/Wallet';
 import { FaRegHeart } from 'react-icons/fa';
