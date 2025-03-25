@@ -36,7 +36,7 @@ export default function WalletManager() {
       formData.append('wallet_catalog_id', data.wallet_catalog_id);
       formData.append('name', data.name);
       formData.append('color', data.color);
-      formData.append('size', data.size);
+      formData.append('quantity', data.quantity);
       formData.append('price', data.price.toString());
 
       if (data.image.length > 0) formData.append('image', data.image[0]);
@@ -68,7 +68,7 @@ export default function WalletManager() {
     setValue('wallet_catalog_id', wallet.wallet_catalog_id);
     setValue('name', wallet.name);
     setValue('color', wallet.color);
-    setValue('size', wallet.size);
+    setValue('quantity', wallet.quantity);
     setValue('price', wallet.price);
   };
 
@@ -95,7 +95,7 @@ export default function WalletManager() {
         </select>
         <input {...register('name')} placeholder="Tên ví" className="border p-2 w-full" required />
         <input {...register('color')} placeholder="Màu sắc" className="border p-2 w-full" required />
-        <input {...register('size')} placeholder="Kích thước" className="border p-2 w-full" required />
+        <input {...register('quantity')} placeholder="Kích thước" className="border p-2 w-full" required />
         <input {...register('price')} type="number" placeholder="Giá" className="border p-2 w-full" required />
 
         {/* Ảnh chính */}
@@ -136,7 +136,7 @@ export default function WalletManager() {
       <ul className="mt-2">
         {wallets.map((wallet) => (
           <li key={wallet._id} className="border p-2 mt-2 flex flex-col space-y-2">
-            <strong>{wallet.name}</strong> - {wallet.color} - {wallet.size} - {wallet.price} VND
+            <strong>{wallet.name}</strong> - {wallet.color} - {wallet.quantity} - {wallet.price} VND
             <div className="flex space-x-4">
               <Image src={wallet.image} alt="Ảnh chính" width={128} height={128} objectFit="cover" className="border rounded-md" />
               <Image src={wallet.thumbnail} alt="Ảnh phụ" width={128} height={128} objectFit="cover" className="border rounded-md" />

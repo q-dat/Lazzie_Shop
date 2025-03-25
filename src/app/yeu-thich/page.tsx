@@ -30,7 +30,7 @@ export default function Favorites() {
                 <th className="px-4 py-3 text-left">Image</th>
                 <th className="px-4 py-3 text-left">Product</th>
                 <th className="px-4 py-3 text-left">Color</th>
-                <th className="px-4 py-3 text-left">Size</th>
+                <th className="px-4 py-3 text-left">Quantity</th>
                 <th className="px-4 py-3 text-left">Price</th>
                 <th className="px-4 py-3 text-center">Action</th>
               </tr>
@@ -45,7 +45,7 @@ export default function Favorites() {
                   </td>
                   <td className="px-4 py-3 font-semibold">{item.name}</td>
                   <td className="px-4 py-3">{item.color}</td>
-                  <td className="px-4 py-3">{item.size}</td>
+                  <td className="px-4 py-3">{item.quantity}</td>
                   <td className="px-4 py-3 font-bold text-gray-800">${item.price}</td>
                   <td className="px-4 py-3 text-center">
                     <button onClick={() => handleRemove(item._id)} className="rounded-md bg-red-500 px-3 py-1 text-white transition hover:bg-red-700">

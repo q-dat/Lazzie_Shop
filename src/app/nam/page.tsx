@@ -57,7 +57,7 @@ export default function ProductPage() {
               <div>
                 <h3 className="text-lg font-semibold">{selectedVariant.name}</h3>
                 <p className="text-gray-600">Màu: {selectedVariant.color}</p>
-                <p className="text-gray-600">Kích thước: {selectedVariant.size}</p>
+                <p className="text-gray-600">Kích thước: {selectedVariant.quantity}</p>
                 <p className="font-bold text-red-500">Giá: {(selectedVariant.price * 1000).toLocaleString('vi-VN')}đ</p>
               </div>
               {/* Chọn màu */}
