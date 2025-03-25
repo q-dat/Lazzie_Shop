@@ -83,9 +83,9 @@ export default function WalletManager() {
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">{editingWallet ? 'Chỉnh sửa ví' : 'Tạo ví mới'}</h2>
+      <h2 className="mb-4 text-xl font-bold">{editingWallet ? 'Chỉnh sửa ví' : 'Tạo ví mới'}</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <select {...register('wallet_catalog_id')} className="border p-2 w-full" required>
+        <select {...register('wallet_catalog_id')} className="w-full border p-2" required>
           <option value="">Chọn danh mục</option>
           {catalogs.map((cat) => (
             <option key={cat._id} value={cat._id}>
@@ -93,35 +93,35 @@ export default function WalletManager() {
             </option>
           ))}
         </select>
-        <input {...register('name')} placeholder="Tên ví" className="border p-2 w-full" required />
-        <input {...register('color')} placeholder="Số lượng" className="border p-2 w-full" required />
-        <input {...register('quantity')} placeholder="Kích thước" className="border p-2 w-full" required />
-        <input {...register('price')} type="number" placeholder="Giá" className="border p-2 w-full" required />
+        <input {...register('name')} placeholder="Tên ví*" className="w-full border p-2" required />
+        <input {...register('color')} placeholder="Màu sắc" className="w-full border p-2" />
+        <input {...register('quantity')} placeholder="Số lượng" className="w-full border p-2" />
+        <input {...register('price')} type="number" placeholder="Giá*" className="w-full border p-2" required />
 
         {/* Ảnh chính */}
-        <input {...register('image')} type="file" accept="image/*" className="border p-2 w-full" />
+        <input {...register('image')} type="file" accept="image/*" className="w-full border p-2" />
         {previewImage && (
-          <div className="relative w-32 h-32 mt-2">
-            <Image src={previewImage} alt="Xem trước ảnh chính" layout="fill" objectFit="cover" className="border rounded-md" />
+          <div className="relative mt-2 h-32 w-32">
+            <Image src={previewImage} alt="Xem trước ảnh chính" layout="fill" objectFit="cover" className="rounded-md border" />
           </div>
         )}
 
         {/* Ảnh phụ */}
-        <input {...register('thumbnail')} type="file" accept="image/*" className="border p-2 w-full" />
+        <input {...register('thumbnail')} type="file" accept="image/*" className="w-full border p-2" />
         {previewThumbnail && (
-          <div className="relative w-32 h-32 mt-2">
-            <Image src={previewThumbnail} alt="Xem trước ảnh phụ" layout="fill" objectFit="cover" className="border rounded-md" />
+          <div className="relative mt-2 h-32 w-32">
+            <Image src={previewThumbnail} alt="Xem trước ảnh phụ" layout="fill" objectFit="cover" className="rounded-md border" />
           </div>
         )}
 
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2">
+        <button type="submit" className="bg-blue-500 px-4 py-2 text-white">
           {editingWallet ? 'Cập nhật ví' : 'Tạo ví'}
         </button>
 
         {editingWallet && (
           <button
             type="button"
-            className="ml-2 bg-gray-500 text-white px-4 py-2"
+            className="ml-2 bg-gray-500 px-4 py-2 text-white"
             onClick={() => {
               reset();
               setEditingWallet(null);
@@ -132,20 +132,20 @@ export default function WalletManager() {
         )}
       </form>
 
-      <h3 className="text-lg font-bold mt-6">Danh sách ví</h3>
+      <h3 className="mt-6 text-lg font-bold">Danh sách ví</h3>
       <ul className="mt-2">
         {wallets.map((wallet) => (
-          <li key={wallet._id} className="border p-2 mt-2 flex flex-col space-y-2">
+          <li key={wallet._id} className="mt-2 flex flex-col space-y-2 border p-2">
             <strong>{wallet.name}</strong> - {wallet.color} - {wallet.quantity} - {wallet.price} VND
             <div className="flex space-x-4">
-              <Image src={wallet.image} alt="Ảnh chính" width={128} height={128} objectFit="cover" className="border rounded-md" />
-              <Image src={wallet.thumbnail} alt="Ảnh phụ" width={128} height={128} objectFit="cover" className="border rounded-md" />
+              <Image src={wallet.image} alt="Ảnh chính" width={128} height={128} objectFit="cover" className="rounded-md border" />
+              <Image src={wallet.thumbnail} alt="Ảnh phụ" width={128} height={128} objectFit="cover" className="rounded-md border" />
             </div>
             <div className="flex space-x-2">
-              <button onClick={() => handleEdit(wallet)} className="bg-yellow-500 text-white px-3 py-1">
+              <button onClick={() => handleEdit(wallet)} className="bg-yellow-500 px-3 py-1 text-white">
                 Sửa
               </button>
-              <button onClick={() => handleDelete(wallet._id)} className="bg-red-500 text-white px-3 py-1">
+              <button onClick={() => handleDelete(wallet._id)} className="bg-red-500 px-3 py-1 text-white">
                 Xóa
               </button>
             </div>

@@ -40,13 +40,13 @@ export default function ProductPage() {
         className="h-full w-full object-cover"
       />
       <button className="absolute top-1 right-1 cursor-pointer text-lg" onClick={() => toggleFavorite(selectedVariant)}>
-        {favorites.some((fav) => fav._id === selectedVariant._id) ? <FaHeart className="text-red-500" /> : <FaRegHeart />}
+        {favorites.some((fav) => fav._id === selectedVariant._id) ? <FaHeart className="text-red-500" /> : <FaRegHeart className="text-black" />}
       </button>
     </div>
   );
 
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6">
+    <div className="grid grid-cols-2 gap-4 px-20 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6">
       {Object.keys(groupedProducts).length > 0 ? (
         Object.entries(groupedProducts).map(([productName, variants]) => {
           const selectedColor = selectedColors[productName] || variants[0].color;
@@ -55,12 +55,11 @@ export default function ProductPage() {
             <div key={productName} className="grid grid-cols-1 justify-center gap-1 p-2 shadow">
               <div>{renderImage(selectedVariant)}</div>
               <div>
-                <h3 className="text-lg font-semibold">{selectedVariant.name}</h3>
-                <p className="text-gray-600">Màu: {selectedVariant.color}</p>
-                <p className="text-gray-600">Kích thước: {selectedVariant.quantity}</p>
-                <p className="font-bold text-red-500">Giá: {(selectedVariant.price * 1000).toLocaleString('vi-VN')}đ</p>
+                <h3 className="text-lg font-[600] uppercase">{selectedVariant.name}</h3>
+                <p className="text-lg font-[600] text-red-500">{(selectedVariant.price * 1000).toLocaleString('vi-VN')}đ</p>
+                <p className="text-sm font-light text-gray-600">{selectedVariant.quantity}</p>
               </div>
-              {/* Chọn màu */}
+              {/*  */}
               <div className="flex space-x-4">
                 {variants.map((variant) => (
                   <button

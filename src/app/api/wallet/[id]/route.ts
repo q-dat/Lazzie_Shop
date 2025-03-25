@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
       wallet_catalog_id: formData.get('wallet_catalog_id'),
       name: formData.get('name'),
       color: formData.get('color'),
-      size: formData.get('size'),
+      quantity: formData.get('quantity'),
       price: Number(formData.get('price')),
       image: mainUpload.secure_url, // Ảnh chính (WebP)
       thumbnail: thumbUpload.secure_url, // Ảnh phụ (WebP)
@@ -85,7 +85,7 @@ export async function PUT(req: NextRequest) {
         wallet_catalog_id: formData.get('wallet_catalog_id') || wallet.wallet_catalog_id,
         name: formData.get('name') || wallet.name,
         color: formData.get('color') || wallet.color,
-        size: formData.get('size') || wallet.size,
+        quantity: formData.get('quantity') || wallet.quantity,
         price: Number(formData.get('price')) || wallet.price,
         image,
         thumbnail,
