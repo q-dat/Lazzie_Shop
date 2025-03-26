@@ -66,7 +66,7 @@ export default function ProductPage() {
                     key={variant._id}
                     onClick={() => setSelectedColors({ ...selectedColors, [productName]: variant.color })}
                     className={`h-6 w-6 cursor-pointer rounded-full hover:scale-90 hover:outline hover:outline-offset-2 ${
-                      selectedColor === variant.color ? 'scale-90 outline outline-offset-2' : ''
+                      selectedColor === variant.color ? 'scale-90 outline outline-offset-2' : 'border border-[#eeeeee]'
                     }`}
                     style={{ backgroundColor: variant.color.toLowerCase() }}
                   />
