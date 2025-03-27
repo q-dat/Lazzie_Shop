@@ -15,28 +15,26 @@ export async function GET(req: Request) {
     const skip = (page - 1) * limit;
 
     let wallets: IWalletDocument[] = [];
-
-    if (redis.status === 'ready') {
-      try {
-        // Lấy dữ liệu từ Redis và kiểm tra null trước khi parse
-        const cachedWallets = await redis.get('wallets_all');
-
-        if (cachedWallets) {
-          wallets = JSON.parse(cachedWallets);
-        }
-      } catch (err) {
-        console.warn('⚠️ Lỗi Redis, dùng MongoDB:', err);
+    // Lấy cache từ Redis
+    try {
+      const cachedWallets = redis.status === 'ready' ? await redis.get('wallets_all') : null;
+      if (cachedWallets) {
+        return NextResponse.json({ message: 'Get all', success: true, data: JSON.parse(cachedWallets) });
       }
+    } catch (err) {
+      console.warn('⚠️ Redis error:', err);
     }
 
-    if (wallets.length === 0) {
-      // Nếu không có cache hoặc Redis lỗi, lấy từ MongoDB
-      wallets = (await Wallet.find().select('wallet_catalog_id name price color image thumbnail').skip(skip).limit(limit).lean()) as unknown as IWalletDocument[];
+    // Nếu không có cache, lấy từ MongoDB
+    try {
+      wallets = await Wallet.find().select('wallet_catalog_id name price color image thumbnail').skip(skip).limit(limit).lean<IWalletDocument[]>();
 
-      // Lưu cache vào Redis
       if (redis.status === 'ready') {
-        await redis.set('wallets_all', JSON.stringify(wallets), 'EX', 3600);
+        await redis.set('wallets_all', JSON.stringify(wallets), 'EX', 600);
       }
+    } catch (err) {
+      console.error('Lỗi MongoDB:', err);
+      return NextResponse.json({ message: 'Lỗi khi lấy dữ liệu từ MongoDB', success: false }, { status: 500 });
     }
     return NextResponse.json(
       { message: 'Get all', success: true, data: wallets },
