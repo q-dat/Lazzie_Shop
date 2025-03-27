@@ -24,7 +24,7 @@ export default function Header() {
   }, [pathname]);
 
   return (
-    <header className="bg-primary text-secondary flex h-[140px] w-full flex-col items-center justify-between gap-1 xl:px-20">
+    <header className="flex h-[140px] w-full flex-col items-center justify-between gap-1 bg-primary text-secondary xl:px-20">
       <section className="flex w-full flex-row items-center justify-between text-sm font-light">
         <div className="flex w-1/3 items-center justify-start gap-2">
           <Link href="https://www.facebook.com/lazzie.shop" target="__blank" className="flex items-center gap-1">
@@ -42,11 +42,15 @@ export default function Header() {
           </Link>
         </div>
         <div className="flex w-1/3 items-center justify-end gap-3 text-xl">
-          <input type="text" placeholder="Tìm kiếm" className="w-[100px] border-b text-sm font-light placeholder:text-black focus:outline-none" />
+          <input
+            type="text"
+            placeholder="Tìm kiếm"
+            className="w-[100px] border-b border-black bg-primary text-sm font-semibold placeholder:text-secondary focus:outline-none"
+          />
           <Link href="/yeu-thich" className="relative">
             <FaRegHeart />
             {favoriteCount > 0 && (
-              <span className="absolute -top-1 -right-2 rounded-full bg-red-700 px-[5px] text-[10px] font-light text-white">{favoriteCount}</span>
+              <span className="absolute -right-2 -top-1 rounded-full bg-red-700 px-[5px] text-[10px] font-light text-white">{favoriteCount}</span>
             )}
           </Link>
           <Link href="/gio-hang">

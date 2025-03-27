@@ -39,14 +39,14 @@ export default function ProductPage() {
         priority
         className="h-full w-full object-cover"
       />
-      <button className="absolute top-1 right-1 cursor-pointer text-lg" onClick={() => toggleFavorite(selectedVariant)}>
+      <button className="absolute right-1 top-1 cursor-pointer text-lg" onClick={() => toggleFavorite(selectedVariant)}>
         {favorites.some((fav) => fav._id === selectedVariant._id) ? <FaHeart className="text-red-500" /> : <FaRegHeart className="text-black" />}
       </button>
     </div>
   );
 
   return (
-    <div className="grid grid-cols-2 gap-4 px-20 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6">
+    <div className="grid grid-cols-2 gap-4 px-2 md:grid-cols-3 lg:grid-cols-4 xl:px-desktop-padding 2xl:grid-cols-6">
       {Object.keys(groupedProducts).length > 0 ? (
         Object.entries(groupedProducts).map(([productName, variants]) => {
           const selectedColor = selectedColors[productName] || variants[0].color;
