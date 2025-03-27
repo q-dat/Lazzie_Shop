@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
-import Wallet from '@/models/Wallet';
+import Wallet, { IWalletDocument } from '@/models/Wallet';
 import cloudinary from '@/lib/cloudinary';
+import redis, { connectRedis } from '@/lib/redis';
 
 export async function GET(req: Request) {
   try {
-    await connectDB();
+    await Promise.all([connectDB(), connectRedis()]);
 
     // Pagination
     const { searchParams } = new URL(req.url);
@@ -13,12 +14,33 @@ export async function GET(req: Request) {
     const limit = Number(searchParams.get('limit')) || 10;
     const skip = (page - 1) * limit;
 
-    const wallets = await Wallet.find().select('name price color image thumbnail').skip(skip).limit(limit).lean();
+    let wallets: IWalletDocument[] = [];
 
-    // Cache Res (60s)
+    if (redis.status === 'ready') {
+      try {
+        // Lấy dữ liệu từ Redis và kiểm tra null trước khi parse
+        const cachedWallets = await redis.get('wallets_all');
+
+        if (cachedWallets) {
+          wallets = JSON.parse(cachedWallets);
+        }
+      } catch (err) {
+        console.warn('⚠️ Lỗi Redis, dùng MongoDB:', err);
+      }
+    }
+
+    if (wallets.length === 0) {
+      // Nếu không có cache hoặc Redis lỗi, lấy từ MongoDB
+      wallets = (await Wallet.find().select('wallet_catalog_id name price color image thumbnail').skip(skip).limit(limit).lean()) as unknown as IWalletDocument[];
+
+      // Lưu cache vào Redis
+      if (redis.status === 'ready') {
+        await redis.set('wallets_all', JSON.stringify(wallets), 'EX', 3600);
+      }
+    }
     return NextResponse.json(
       { message: 'Get all', success: true, data: wallets },
-      { headers: { 'Cache-Control': 's-maxage=60, stale-while-revalidate=30' } }
+      { headers: { 'Cache-Control': 's-maxage=3600, stale-while-revalidate=1800' } }
     );
   } catch (error) {
     console.error('Lỗi:', error);
