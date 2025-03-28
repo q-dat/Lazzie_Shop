@@ -6,7 +6,9 @@ export interface WalletFormData {
   name: string;
   price: number;
   color: string;
+  size: string;
   quantity: string;
+  status: string;
   image: FileList;
   thumbnail: FileList;
 }
@@ -17,7 +19,9 @@ export interface IWallet {
   name: string;
   price: number;
   color: string;
+  size: string;
   quantity: string;
+  status: string;
   image: string;
   thumbnail: string;
 }
@@ -28,7 +32,9 @@ export interface IWalletDocument extends Document {
   name: string;
   price: number;
   color: string;
+  size: string;
   quantity: string;
+  status: string;
   image: string;
   thumbnail: string;
 }
@@ -39,7 +45,9 @@ const WalletSchema = new Schema<IWalletDocument>(
     name: { type: String, required: true },
     price: { type: Number, required: true },
     color: { type: String },
+    size: { type: String },
     quantity: { type: String },
+    status: { type: String },
     image: { type: String, required: true },
     thumbnail: { type: String },
   },

@@ -24,16 +24,15 @@ export default function Header() {
   }, [pathname]);
 
   return (
-    <header className="flex h-[140px] w-full flex-col items-center justify-between gap-1 bg-primary text-secondary xl:px-20">
-      <section className="flex w-full flex-row items-center justify-between text-sm font-light">
-        <div className="flex w-1/3 items-center justify-start gap-2">
-          <Link href="https://www.facebook.com/lazzie.shop" target="__blank" className="flex items-center gap-1">
-            <IoLogoFacebook className="text-lg" />
-            Lazzie Shop
+    <header className="fixed top-0 z-[99999] h-[140px] w-full flex-col items-center justify-between gap-1 bg-primary text-secondary xl:px-20">
+      <section className="flex w-full flex-row items-center justify-between">
+        <div className="flex w-1/3 items-center justify-start gap-2 text-sm font-semibold">
+          <Link href="https://www.facebook.com/lazzie.shop" target="__blank" className="flex items-center">
+            <IoLogoFacebook className="text-xl" />
           </Link>
-          <Link href="/cua-hang" className="flex items-center gap-1">
+          <Link href="/cua-hang" className="flex items-center">
             <HiLocationMarker className="text-xl" />
-            Cửa Hàng
+            Store
           </Link>
         </div>
         <div className="flex w-1/3 justify-center">
@@ -50,7 +49,9 @@ export default function Header() {
           <Link href="/yeu-thich" className="relative">
             <FaRegHeart />
             {favoriteCount > 0 && (
-              <span className="absolute -right-2 -top-1 rounded-full bg-red-700 px-[5px] text-[10px] font-light text-white">{favoriteCount}</span>
+              <span className="absolute -right-2 -top-1 flex h-4 items-center justify-center rounded-full bg-red-700 px-1 text-[10px] font-semibold text-white">
+                {favoriteCount}
+              </span>
             )}
           </Link>
           <Link href="/gio-hang">
@@ -58,7 +59,8 @@ export default function Header() {
           </Link>
         </div>
       </section>
-      <nav className="flex h-[60px] flex-row items-center gap-2">
+      {/* Navigation */}
+      <nav className="flex h-[60px] flex-row items-center justify-center gap-2">
         {menuItems.map((item) => (
           <div
             key={item.name}

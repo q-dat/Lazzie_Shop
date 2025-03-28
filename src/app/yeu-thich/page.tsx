@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { IWallet } from '@/models/Wallet';
 import { useFavorite } from '../context/FavoriteContext/FavoriteProvider';
 
-export default function Favorites() {
+export default function FavoritesPage() {
   const { favorites, toggleFavorite } = useFavorite();
   const [localFavorites, setLocalFavorites] = useState<IWallet[]>([]);
 
@@ -18,38 +18,45 @@ export default function Favorites() {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="mb-6 text-2xl font-bold">Favorites</h1>
+    <div>
+      <h1 className="mb-6 text-2xl font-semibold">Sản phẩm yêu thích</h1>
       {localFavorites.length === 0 ? (
-        <p className="text-gray-500">No favorite items found.</p>
+        <p className="text-gray-500">Danh sách sản phẩm yêu thích của bạn đang trống!</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full border border-gray-300 bg-white shadow-lg">
-            <thead className="bg-gray-100">
+        <div className="overflow-x-auto border border-primary">
+          <table className="w-full bg-white">
+            <thead className="bg-primary text-center text-black">
               <tr>
-                <th className="px-4 py-3 text-left">Image</th>
-                <th className="px-4 py-3 text-left">Product</th>
-                <th className="px-4 py-3 text-left">Color</th>
-                <th className="px-4 py-3 text-left">Quantity</th>
-                <th className="px-4 py-3 text-left">Price</th>
-                <th className="px-4 py-3 text-center">Action</th>
+                <th className="border p-3">Hình ảnh</th>
+                <th className="border p-3">Sản phẩm</th>
+                <th className="border p-3">Màu sắc</th>
+                <th className="border p-3">Size</th>
+                <th className="border p-3">Giá</th>
+                <th className="border p-3">Trạng thái</th>
+                <th className="border p-3">Hành động</th>
               </tr>
             </thead>
             <tbody>
               {localFavorites.map((item) => (
-                <tr key={item._id} className="border-t">
-                  <td className="px-4 py-3">
-                    <div className="relative h-20 w-20">
-                      <Image src={item.image} alt={item.name} layout="fill" objectFit="cover" className="rounded-md" />
+                <tr key={item._id} className="border-b text-center">
+                  <td className="p-3">
+                    <div className="relative mx-auto h-16 w-16">
+                      <Image src={item.image || '/fallback-image.jpg'} alt={item.name} layout="fill" objectFit="cover" className="rounded-md" />
                     </div>
                   </td>
-                  <td className="px-4 py-3 font-semibold">{item.name}</td>
-                  <td className="px-4 py-3">{item.color}</td>
-                  <td className="px-4 py-3">{item.quantity}</td>
-                  <td className="px-4 py-3 font-bold text-gray-800">${item.price}</td>
-                  <td className="px-4 py-3 text-center">
-                    <button onClick={() => handleRemove(item._id)} className="rounded-md bg-red-500 px-3 py-1 text-white transition hover:bg-red-700">
-                      Remove
+                  <td className="p-3 font-semibold">{item.name}</td>
+                  <td className="p-3">
+                    <div
+                      className="mx-auto h-6 w-6 rounded-full border border-secondary shadow-sm"
+                      style={{ backgroundColor: item.color.toLowerCase() }}
+                    />
+                  </td>
+                  <td className="p-3 font-semibold">{item.size}</td>
+                  <td className="p-3 font-bold text-red-600">{(item.price * 1000).toLocaleString('vi-VN')}đ</td>
+                  <td className="p-3 font-semibold">{item.status || 'Còn hàng'}</td>
+                  <td className="p-3">
+                    <button onClick={() => handleRemove(item._id)} className="rounded-md bg-red-500 px-3 py-1 text-white transition hover:bg-red-600">
+                      Xóa
                     </button>
                   </td>
                 </tr>

@@ -22,7 +22,7 @@ export default {
     extend: {
       //p-desktop-padding
       spacing: {
-        'desktop-padding': '80px',
+        'desktop-padding': '40px',
       },
       fontFamily: {
         sans: ['Inter', ...defaultTheme.fontFamily.sans],

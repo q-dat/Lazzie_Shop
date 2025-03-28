@@ -27,7 +27,11 @@ export async function GET(req: Request) {
 
     // Nếu không có cache, lấy từ MongoDB
     try {
-      wallets = await Wallet.find().select('wallet_catalog_id name price color image thumbnail').skip(skip).limit(limit).lean<IWalletDocument[]>();
+      wallets = await Wallet.find()
+        .select('wallet_catalog_id name price color size status image thumbnail')
+        .skip(skip)
+        .limit(limit)
+        .lean<IWalletDocument[]>();
 
       if (redis.status === 'ready') {
         await redis.set('wallets_all', JSON.stringify(wallets), 'EX', 600);
@@ -90,10 +94,12 @@ export async function POST(req: NextRequest) {
       wallet_catalog_id: formData.get('wallet_catalog_id'),
       name: formData.get('name'),
       color: formData.get('color'),
+      size: formData.get('size'),
       quantity: formData.get('quantity'),
+      status: formData.get('status'),
       price: Number(formData.get('price')),
-      image: mainUpload.secure_url, // Ảnh chính (WebP)
-      thumbnail: thumbUrl, // Ảnh phụ (WebP) nếu có
+      image: mainUpload.secure_url,
+      thumbnail: thumbUrl,
     });
 
     await newWallet.save();

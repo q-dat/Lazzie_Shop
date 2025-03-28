@@ -31,53 +31,70 @@ export default function ProductPage() {
   }, {});
 
   const renderImage = (selectedVariant: IWallet) => (
-    <div className="relative aspect-square" onMouseEnter={() => setHoveredId(selectedVariant._id)} onMouseLeave={() => setHoveredId(null)}>
+    <div
+      className="relative aspect-square cursor-pointer"
+      onMouseEnter={() => setHoveredId(selectedVariant?._id)}
+      onMouseLeave={() => setHoveredId(null)}
+    >
       <Image
-        src={hoveredId === selectedVariant._id ? selectedVariant.thumbnail : selectedVariant.image}
-        alt={selectedVariant.name || 'Hình Ảnh'}
+        src={hoveredId === selectedVariant?._id ? selectedVariant?.thumbnail || selectedVariant?.image : selectedVariant?.image}
+        alt={selectedVariant?.name || 'Hình Ảnh'}
         fill
         priority
         className="h-full w-full object-cover"
       />
       <button className="absolute right-1 top-1 cursor-pointer text-lg" onClick={() => toggleFavorite(selectedVariant)}>
-        {favorites.some((fav) => fav._id === selectedVariant._id) ? <FaHeart className="text-red-500" /> : <FaRegHeart className="text-black" />}
+        {favorites.some((fav) => fav._id === selectedVariant?._id) ? (
+          <FaHeart className="text-red-500" />
+        ) : (
+          <FaRegHeart className="text-black hover:text-primary" />
+        )}
       </button>
     </div>
   );
 
   return (
-    <div className="grid grid-cols-2 gap-4 px-2 md:grid-cols-3 lg:grid-cols-4 xl:px-desktop-padding 2xl:grid-cols-6">
-      {Object.keys(groupedProducts).length > 0 ? (
-        Object.entries(groupedProducts).map(([productName, variants]) => {
-          const selectedColor = selectedColors[productName] || variants[0].color;
-          const selectedVariant = variants.find((v) => v.color === selectedColor) || variants[0];
-          return (
-            <div key={productName} className="grid grid-cols-1 justify-center gap-1 p-2 shadow">
-              <div>{renderImage(selectedVariant)}</div>
-              <div>
-                <h3 className="text-lg font-[600] uppercase">{selectedVariant.name}</h3>
-                <p className="text-lg font-[600] text-red-500">{(selectedVariant.price * 1000).toLocaleString('vi-VN')}đ</p>
-                <p className="text-sm font-light text-gray-600">{selectedVariant.quantity}</p>
-              </div>
-              {/*  */}
-              <div className="flex space-x-4">
-                {variants.map((variant) => (
-                  <button
-                    key={variant._id}
-                    onClick={() => setSelectedColors({ ...selectedColors, [productName]: variant.color })}
-                    className={`h-6 w-6 cursor-pointer rounded-full hover:scale-90 hover:outline hover:outline-offset-2 ${
-                      selectedColor === variant.color ? 'scale-90 outline outline-offset-2' : 'border border-[#eeeeee]'
-                    }`}
-                    style={{ backgroundColor: variant.color.toLowerCase() }}
-                  />
-                ))}
-              </div>
-            </div>
-          );
-        })
-      ) : (
-        <p>Không có sản phẩm nào.</p>
-      )}
+    <div className="grid grid-flow-row items-start justify-between xl:grid-flow-col xl:grid-cols-4">
+      <div className="col-span-1">
+        <h1 className="font-semibold">Lọc sản phẩm</h1>
+      </div>
+      <div className="col-span-3">
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">
+          {Object.keys(groupedProducts).length > 0 ? (
+            Object.entries(groupedProducts).map(([productName, variants]) => {
+              const selectedColor = selectedColors[productName] || variants[0].color;
+              const selectedVariant = variants.find((v) => v.color === selectedColor) || variants[0];
+              return (
+                <div key={productName} className="grid grid-cols-1 justify-center gap-2 border p-1">
+                  <div>{renderImage(selectedVariant)}</div>
+                  <div className="space-y-3 px-2 pb-2 pt-0">
+                    <div>
+                      <h3 className="text-[16px] font-semibold uppercase">{selectedVariant?.name}</h3>
+                      <p className="text-sm font-semibold text-del">{(selectedVariant?.price * 1000).toLocaleString('vi-VN')}đ</p>
+                      {selectedVariant?.quantity && <p className="text-sm font-light text-gray-600">{selectedVariant?.quantity}</p>}
+                    </div>
+                    {/*  */}
+                    <div className="flex flex-row gap-4">
+                      {variants.map((variant) => (
+                        <button
+                          key={variant._id}
+                          onClick={() => setSelectedColors({ ...selectedColors, [productName]: variant.color })}
+                          className={`h-4 w-4 cursor-pointer rounded-full hover:scale-90 hover:outline hover:outline-1 hover:outline-offset-2 ${
+                            selectedColor === variant.color ? 'scale-90 outline outline-1 outline-offset-2' : 'border border-[#eeeeee]'
+                          }`}
+                          style={{ backgroundColor: variant.color.toLowerCase() }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <p>Không có sản phẩm nào.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

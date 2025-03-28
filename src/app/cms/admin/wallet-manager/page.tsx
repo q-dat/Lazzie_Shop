@@ -36,7 +36,9 @@ export default function WalletManager() {
       formData.append('wallet_catalog_id', data.wallet_catalog_id);
       formData.append('name', data.name);
       formData.append('color', data.color);
+      formData.append('size', data.size);
       formData.append('quantity', data.quantity);
+      formData.append('status', data.status);
       formData.append('price', data.price.toString());
 
       if (data.image.length > 0) formData.append('image', data.image[0]);
@@ -68,7 +70,9 @@ export default function WalletManager() {
     setValue('wallet_catalog_id', wallet.wallet_catalog_id);
     setValue('name', wallet.name);
     setValue('color', wallet.color);
+    setValue('size', wallet.size);
     setValue('quantity', wallet.quantity);
+    setValue('status', wallet.status);
     setValue('price', wallet.price);
   };
 
@@ -95,7 +99,9 @@ export default function WalletManager() {
         </select>
         <input {...register('name')} placeholder="Tên ví*" className="w-full border p-2" required />
         <input {...register('color')} placeholder="Màu sắc" className="w-full border p-2" />
+        <input {...register('size')} placeholder="Màu sắc" className="w-full border p-2" />
         <input {...register('quantity')} placeholder="Số lượng" className="w-full border p-2" />
+        <input {...register('status')} placeholder="Trạng thái" className="w-full border p-2" />
         <input {...register('price')} type="number" placeholder="Giá*" className="w-full border p-2" required />
 
         {/* Ảnh chính */}
@@ -134,19 +140,21 @@ export default function WalletManager() {
       <h3 className="mt-6 text-lg font-bold">Danh sách ví</h3>
       <ul className="mt-2">
         {wallets.map((wallet) => (
-          <li key={wallet._id} className="mt-2 flex flex-col space-y-2 border p-2">
-            <strong>{wallet.name}</strong> - {wallet.color} - {wallet.quantity} - {wallet.price} VND
+          <li key={wallet?._id} className="mt-2 flex flex-col space-y-2 border p-2">
+            <strong>{wallet?.name}</strong> - {wallet?.color} - {wallet?.size} - {wallet?.quantity} - {wallet?.status} - {wallet?.price} VND
             <div className="flex space-x-4">
-              {wallet.image && <Image src={wallet.image} alt="Ảnh chính" width={128} height={128} objectFit="cover" className="rounded-md border" />}
-              {wallet.thumbnail && (
-                <Image src={wallet.thumbnail} alt="Ảnh phụ" width={128} height={128} objectFit="cover" className="rounded-md border" />
+              {wallet?.image && (
+                <Image src={wallet?.image} alt="Ảnh chính" width={128} height={128} objectFit="cover" className="rounded-md border" />
+              )}
+              {wallet?.thumbnail && (
+                <Image src={wallet?.thumbnail} alt="Ảnh phụ" width={128} height={128} objectFit="cover" className="rounded-md border" />
               )}
             </div>
             <div className="flex space-x-2">
               <button onClick={() => handleEdit(wallet)} className="bg-yellow-500 px-3 py-1 text-white">
                 Sửa
               </button>
-              <button onClick={() => handleDelete(wallet._id)} className="bg-red-500 px-3 py-1 text-white">
+              <button onClick={() => handleDelete(wallet?._id)} className="bg-red-500 px-3 py-1 text-white">
                 Xóa
               </button>
             </div>

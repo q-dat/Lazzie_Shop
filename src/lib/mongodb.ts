@@ -20,7 +20,7 @@ const cached: MongooseCache = global.mongooseCache ?? { conn: null, promise: nul
 
 export async function connectDB(): Promise<Connection> {
   if (cached.conn) {
-    console.log('MongoDB đã được kết nối.');
+    console.log('✅ MongoDB đã được kết nối.');
     return cached.conn;
   }
 
@@ -32,11 +32,11 @@ export async function connectDB(): Promise<Connection> {
         bufferCommands: false,
       })
       .then((mongooseInstance) => {
-        console.log('Kết nối MongoDB thành công!');
+        console.log('✅ Kết nối MongoDB thành công!');
         return mongooseInstance.connection;
       })
       .catch((err) => {
-        console.error('Lỗi kết nối MongoDB:', err);
+        console.error('❌ Lỗi kết nối MongoDB:', err);
         throw err;
       });
   }

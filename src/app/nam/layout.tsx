@@ -10,7 +10,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <Header />
-      {children}
+      <div className="mt-[150px] px-2 xl:px-desktop-padding">{children}</div>
     </div>
   );
 }
