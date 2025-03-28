@@ -1,4 +1,3 @@
-import { FaHome } from 'react-icons/fa';
 import { IconType } from 'react-icons/lib';
 
 interface MenuItem {
@@ -8,11 +7,11 @@ interface MenuItem {
   submenu?: { name: string; link: string; icon?: IconType }[];
 }
 const menuItems: MenuItem[] = [
-  {
-    icon: FaHome,
-    name: 'Trang Chủ',
-    link: '/',
-  },
+  // {
+  //   icon: FaHome,
+  //   name: 'Trang Chủ',
+  //   link: '/',
+  // },
   {
     name: 'Nam',
     link: '/nam',

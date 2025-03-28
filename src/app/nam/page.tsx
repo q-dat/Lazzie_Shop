@@ -41,6 +41,7 @@ export default function ProductPage() {
         alt={selectedVariant?.name || 'Hình Ảnh'}
         fill
         priority
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         className="h-full w-full object-cover"
       />
       <button className="absolute right-1 top-1 cursor-pointer text-lg" onClick={() => toggleFavorite(selectedVariant)}>
