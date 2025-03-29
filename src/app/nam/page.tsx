@@ -40,7 +40,13 @@ export default function ProductPage() {
     >
       <Link href={`/nam/${selectedVariant._id}`}>
         <Image
-          src={hoveredId === selectedVariant?._id ? selectedVariant?.thumbnail || selectedVariant?.image : selectedVariant?.image}
+          src={
+            hoveredId === selectedVariant?._id
+              ? Array.isArray(selectedVariant?.thumbnail) && selectedVariant.thumbnail.length > 0
+                ? selectedVariant.thumbnail[0]
+                : selectedVariant?.image
+              : selectedVariant?.image
+          }
           alt={selectedVariant?.name || 'Hình Ảnh'}
           fill
           priority

@@ -27,7 +27,7 @@ export interface IWallet {
   note: string;
   des: string;
   image: string;
-  thumbnail: string;
+  thumbnail: string[];
 }
 
 export interface IWalletDocument extends Document {
@@ -42,7 +42,7 @@ export interface IWalletDocument extends Document {
   note: string;
   des: string;
   image: string;
-  thumbnail: string;
+  thumbnail: string[];
 }
 
 const WalletSchema = new Schema<IWalletDocument>(
@@ -57,7 +57,7 @@ const WalletSchema = new Schema<IWalletDocument>(
     note: { type: String },
     des: { type: String },
     image: { type: String, required: true },
-    thumbnail: { type: String },
+    thumbnail: { type: [String], default: [] },
   },
   { timestamps: true }
 );

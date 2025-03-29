@@ -16,7 +16,14 @@ export default function WalletManager() {
   const watchThumbnail = watch('thumbnail');
 
   const previewImage = watchImage && watchImage.length > 0 ? URL.createObjectURL(watchImage[0]) : editingWallet?.image || null;
-  const previewThumbnail = watchThumbnail && watchThumbnail.length > 0 ? URL.createObjectURL(watchThumbnail[0]) : editingWallet?.thumbnail || null;
+  const previewThumbnails =
+    typeof window !== 'undefined' && watchThumbnail instanceof FileList
+      ? Array.from(watchThumbnail).map((file) => URL.createObjectURL(file))
+      : Array.isArray(editingWallet?.thumbnail)
+        ? editingWallet.thumbnail
+        : editingWallet?.thumbnail
+          ? [editingWallet.thumbnail]
+          : [];
 
   useEffect(() => {
     axios
@@ -44,7 +51,9 @@ export default function WalletManager() {
       formData.append('price', data.price.toString());
 
       if (data.image.length > 0) formData.append('image', data.image[0]);
-      if (data.thumbnail.length > 0) formData.append('thumbnail', data.thumbnail[0]);
+      if (data.thumbnail && data.thumbnail.length > 0) {
+        Array.from(data.thumbnail as FileList).forEach((file) => formData.append('thumbnail', file));
+      }
 
       let res: { data: { data: IWallet } };
 
@@ -114,17 +123,19 @@ export default function WalletManager() {
         <input {...register('image')} type="file" accept="image/*" className="w-full border p-2" />
         {previewImage && (
           <div className="relative mt-2 h-32 w-32">
-            <Image src={previewImage} alt="Xem trước ảnh chính" layout="fill" objectFit="cover" className="rounded-md border" />
+            <Image src={previewImage} alt="Xem trước ảnh chính" fill className="rounded-md border object-cover" />
           </div>
         )}
 
         {/* Ảnh phụ */}
-        <input {...register('thumbnail')} type="file" accept="image/*" className="w-full border p-2" />
-        {previewThumbnail && (
-          <div className="relative mt-2 h-32 w-32">
-            <Image src={previewThumbnail} alt="Xem trước ảnh phụ" layout="fill" objectFit="cover" className="rounded-md border" />
-          </div>
-        )}
+        <input {...register('thumbnail')} type="file" accept="image/*" multiple className="w-full border p-2" />
+        <div className="mt-2 flex flex-wrap gap-2">
+          {previewThumbnails.map((src, idx) => (
+            <div key={idx} className="relative h-32 w-32">
+              <Image src={src} alt={`Ảnh phụ ${idx + 1}`} fill className="rounded-md border object-cover" />
+            </div>
+          ))}
+        </div>
         <button type="submit" className="bg-blue-500 px-4 py-2 text-white">
           {editingWallet ? 'Cập nhật ví' : 'Tạo ví'}
         </button>
@@ -149,12 +160,12 @@ export default function WalletManager() {
           <li key={wallet?._id} className="mt-2 flex flex-col space-y-2 border p-2">
             <strong>{wallet?.name}</strong> - {wallet?.color} - {wallet?.size} - {wallet?.quantity} - {wallet?.status} - {wallet?.price} VND
             <div className="flex space-x-4">
-              {wallet?.image && (
-                <Image src={wallet?.image} alt="Ảnh chính" width={128} height={128} objectFit="cover" className="rounded-md border" />
-              )}
-              {wallet?.thumbnail && (
-                <Image src={wallet?.thumbnail} alt="Ảnh phụ" width={128} height={128} objectFit="cover" className="rounded-md border" />
-              )}
+              {wallet?.image && <Image src={wallet?.image} alt="Ảnh chính" width={128} height={128} className="rounded-md border object-cover" />}
+              {Array.isArray(wallet?.thumbnail)
+                ? wallet.thumbnail.map((thumb, idx) => (
+                    <Image key={idx} src={thumb} alt={`Ảnh phụ ${idx + 1}`} width={128} height={128} className="rounded-md border object-cover" />
+                  ))
+                : null}
             </div>
             <div className="flex space-x-2">
               <button onClick={() => handleEdit(wallet)} className="bg-yellow-500 px-3 py-1 text-white">

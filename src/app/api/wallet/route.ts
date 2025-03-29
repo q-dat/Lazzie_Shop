@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData();
 
     const mainFile = formData.get('image') as Blob | null;
-    const thumbFile = formData.get('thumbnail') as Blob | null;
+    const thumbFiles = formData.getAll('thumbnail') as Blob[];
 
     if (!mainFile) {
       return NextResponse.json({ success: false, message: 'Ảnh chính không hợp lệ' }, { status: 400 });
@@ -86,20 +86,24 @@ export async function POST(req: NextRequest) {
       transformation: [{ width: 300, height: 300, crop: 'fill' }],
     });
 
-    let thumbUrl = null;
-    if (thumbFile) {
-      // Convert ảnh phụ sang Base64
-      const thumbBuffer = Buffer.from(await thumbFile.arrayBuffer());
-      const thumbBase64 = `data:${thumbFile.type};base64,${thumbBuffer.toString('base64')}`;
+    let thumbnailUrls: string[] = [];
 
-      // 📌 **Upload ảnh phụ với resize và WebP**
-      const thumbUpload = await cloudinary.uploader.upload(thumbBase64, {
-        folder: 'wallets/thumbnails',
-        format: 'webp',
-        transformation: [{ width: 300, height: 300, crop: 'thumb' }],
-      });
+    if (thumbFiles.length > 0) {
+      for (const thumbFile of thumbFiles) {
+        if (thumbFile instanceof Blob) {
+          const thumbBuffer = Buffer.from(await thumbFile.arrayBuffer());
+          const thumbBase64 = `data:${thumbFile.type};base64,${thumbBuffer.toString('base64')}`;
 
-      thumbUrl = thumbUpload.secure_url;
+          // 📌 **Upload ảnh phụ với resize và WebP**
+          const thumbUpload = await cloudinary.uploader.upload(thumbBase64, {
+            folder: 'wallets/thumbnails',
+            format: 'webp',
+            transformation: [{ width: 300, height: 300, crop: 'thumb' }],
+          });
+
+          thumbnailUrls.push(thumbUpload.secure_url);
+        }
+      }
     }
 
     // Lưu vào MongoDB
@@ -114,7 +118,7 @@ export async function POST(req: NextRequest) {
       note: formData.get('note'),
       des: formData.get('des'),
       image: mainUpload.secure_url,
-      thumbnail: thumbUrl,
+      thumbnail: thumbnailUrls,
     });
 
     await newWallet.save();
