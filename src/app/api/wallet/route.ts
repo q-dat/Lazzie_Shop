@@ -6,18 +6,30 @@ import redis, { connectRedis } from '@/lib/redis';
 
 export async function GET(req: Request) {
   try {
-    await Promise.all([connectDB(), connectRedis()]);
+    await connectRedis();
+    if (redis.status !== 'ready') {
+      console.log('⏳ Đợi Redis kết nối lại...');
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
 
-    // Pagination
+    try {
+      await redis.ping();
+      console.log('Redis đã sẵn sàng!');
+    } catch (err) {
+      console.error('❌ Lỗi khi ping Redis:', err);
+      return NextResponse.json({ message: 'Lỗi Redis', success: false }, { status: 500 });
+    }
+
+    await connectDB();
+    console.log('Kết nối MongoDB thành công!');
+
     const { searchParams } = new URL(req.url);
     const page = Number(searchParams.get('page')) || 1;
     const limit = Number(searchParams.get('limit')) || 10;
     const skip = (page - 1) * limit;
 
-    let wallets: IWalletDocument[] = [];
-    // Lấy cache từ Redis
     try {
-      const cachedWallets = redis.status === 'ready' ? await redis.get('wallets_all') : null;
+      const cachedWallets = await redis.get(`wallets_page_${page}`);
       if (cachedWallets) {
         return NextResponse.json({ message: 'Get all', success: true, data: JSON.parse(cachedWallets) });
       }
@@ -25,7 +37,8 @@ export async function GET(req: Request) {
       console.warn('⚠️ Redis error:', err);
     }
 
-    // Nếu không có cache, lấy từ MongoDB
+    // Nếu không có cache, truy vấn từ MongoDB
+    let wallets: IWalletDocument[] = [];
     try {
       wallets = await Wallet.find()
         .select('wallet_catalog_id name price color size status image thumbnail')
@@ -33,13 +46,13 @@ export async function GET(req: Request) {
         .limit(limit)
         .lean<IWalletDocument[]>();
 
-      if (redis.status === 'ready') {
-        await redis.set('wallets_all', JSON.stringify(wallets), 'EX', 600);
-      }
+      // Lưu kết quả vào Redis với TTL
+      await redis.set(`wallets_page_${page}`, JSON.stringify(wallets), 'EX', 60);
     } catch (err) {
       console.error('Lỗi MongoDB:', err);
       return NextResponse.json({ message: 'Lỗi khi lấy dữ liệu từ MongoDB', success: false }, { status: 500 });
     }
+
     return NextResponse.json(
       { message: 'Get all', success: true, data: wallets },
       { headers: { 'Cache-Control': 's-maxage=3600, stale-while-revalidate=1800' } }
