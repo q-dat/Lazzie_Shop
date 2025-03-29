@@ -39,6 +39,8 @@ export default function WalletManager() {
       formData.append('size', data.size);
       formData.append('quantity', data.quantity);
       formData.append('status', data.status);
+      formData.append('note', data.note);
+      formData.append('des', data.des);
       formData.append('price', data.price.toString());
 
       if (data.image.length > 0) formData.append('image', data.image[0]);
@@ -73,6 +75,8 @@ export default function WalletManager() {
     setValue('size', wallet.size);
     setValue('quantity', wallet.quantity);
     setValue('status', wallet.status);
+    setValue('note', wallet.note);
+    setValue('des', wallet.des);
     setValue('price', wallet.price);
   };
 
@@ -99,9 +103,11 @@ export default function WalletManager() {
         </select>
         <input {...register('name')} placeholder="Tên ví*" className="w-full border p-2" required />
         <input {...register('color')} placeholder="Màu sắc" className="w-full border p-2" />
-        <input {...register('size')} placeholder="Màu sắc" className="w-full border p-2" />
+        <input {...register('size')} placeholder="Size" className="w-full border p-2" />
         <input {...register('quantity')} placeholder="Số lượng" className="w-full border p-2" />
         <input {...register('status')} placeholder="Trạng thái" className="w-full border p-2" />
+        <input {...register('note')} placeholder="Ghi chú" className="w-full border p-2" />
+        <input {...register('des')} placeholder="Mô tả" className="w-full border p-2" />
         <input {...register('price')} type="number" placeholder="Giá*" className="w-full border p-2" required />
 
         {/* Ảnh chính */}

@@ -41,7 +41,7 @@ export async function GET(req: Request) {
     let wallets: IWalletDocument[] = [];
     try {
       wallets = await Wallet.find()
-        .select('wallet_catalog_id name price color size status image thumbnail')
+        .select('wallet_catalog_id name price color size status note des image thumbnail')
         .skip(skip)
         .limit(limit)
         .lean<IWalletDocument[]>();
@@ -109,8 +109,10 @@ export async function POST(req: NextRequest) {
       color: formData.get('color'),
       size: formData.get('size'),
       quantity: formData.get('quantity'),
-      status: formData.get('status'),
       price: Number(formData.get('price')),
+      status: formData.get('status'),
+      note: formData.get('note'),
+      des: formData.get('des'),
       image: mainUpload.secure_url,
       thumbnail: thumbUrl,
     });

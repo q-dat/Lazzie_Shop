@@ -38,6 +38,8 @@ export async function PUT(req: NextRequest) {
         size: formData.get('size') || wallet.size,
         quantity: formData.get('quantity') || wallet.quantity,
         status: formData.get('status') || wallet.status,
+        note: formData.get('note') || wallet.note,
+        des: formData.get('des') || wallet.des,
         price: Number(formData.get('price')) || wallet.price,
         image,
         thumbnail,
