@@ -1,25 +1,56 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import Wallet from '@/models/Wallet';
-import cloudinary from '@/lib/cloudinary';
 import mongoose from 'mongoose';
+import redis, { connectRedis } from '@/lib/redis';
+import { uploadToCloudinary } from '@/lib/cloudinary';
 
-// 📌 **Hàm lấy ID từ URL**
+// Lấy id từ url
 const getIdFromUrl = (req: NextRequest): string | null => {
   const paths = req.nextUrl.pathname.split('/');
   const id = paths[paths.length - 1];
   return mongoose.Types.ObjectId.isValid(id) ? id : null;
 };
-// 📌 **PUT: Cập nhật thông tin ví (bao gồm cả ảnh)**
+
+export async function GET(req: NextRequest) {
+  try {
+    await connectDB();
+    await connectRedis();
+
+    const paths = req.nextUrl.pathname.split('/');
+    const id = paths[paths.length - 1];
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ success: false, message: 'ID truyền vào không hợp lệ!' }, { status: 400 });
+    }
+
+    const cacheKey = `wallet_${id}`;
+    const cachedWallet = await redis.get(cacheKey);
+    if (cachedWallet) {
+      return NextResponse.json({ success: true, data: JSON.parse(cachedWallet) });
+    }
+
+    const wallet = await Wallet.findById(id).lean();
+    if (!wallet) {
+      return NextResponse.json({ success: false, message: 'Sản phẩm không tìm thấy!' }, { status: 404 });
+    }
+
+    await redis.set(cacheKey, JSON.stringify(wallet), 'EX', 60);
+
+    return NextResponse.json({ success: true, data: wallet });
+  } catch (error) {
+    console.error('Lỗi:', error);
+    return NextResponse.json({ success: false, message: 'Lỗi khi lấy thông tin ví!' }, { status: 500 });
+  }
+}
 export async function PUT(req: NextRequest) {
   try {
     await connectDB();
     const id = getIdFromUrl(req);
-    if (!id) return NextResponse.json({ success: false, message: 'Invalid wallet ID' }, { status: 400 });
+    if (!id) return NextResponse.json({ success: false, message: 'ID truyền vào không hợp lệ!' }, { status: 400 });
 
     const formData = await req.formData();
     const wallet = await Wallet.findById(id);
-    if (!wallet) return NextResponse.json({ success: false, message: 'Wallet not found' }, { status: 404 });
+    if (!wallet) return NextResponse.json({ success: false, message: 'Sản phẩm không tìm thấy!' }, { status: 404 });
 
     // 📌 **Xử lý ảnh mới (nếu có)**
     const mainFile = formData.get('image') as Blob | null;
@@ -53,32 +84,18 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ message: 'Lỗi khi cập nhật ví', success: false }, { status: 500 });
   }
 }
-
-// 📌 **DELETE: Xóa ví**
 export async function DELETE(req: NextRequest) {
   try {
     await connectDB();
     const id = getIdFromUrl(req);
-    if (!id) return NextResponse.json({ success: false, message: 'Invalid wallet ID' }, { status: 400 });
+    if (!id) return NextResponse.json({ success: false, message: 'ID truyền vào không hợp lệ!' }, { status: 400 });
 
     const deletedWallet = await Wallet.findByIdAndDelete(id);
-    if (!deletedWallet) return NextResponse.json({ success: false, message: 'Wallet not found' }, { status: 404 });
+    if (!deletedWallet) return NextResponse.json({ success: false, message: 'Sản phẩm không tìm thấy!' }, { status: 404 });
 
-    return NextResponse.json({ success: true, message: 'Wallet deleted' });
+    return NextResponse.json({ success: true, message: 'Đã xóa sản phẩm thành công.' });
   } catch (error) {
     console.error('Lỗi:', error);
     return NextResponse.json({ success: false, message: 'Lỗi khi xóa ví' }, { status: 500 });
   }
-}
-
-// 📌 **Hàm upload ảnh lên Cloudinary**
-async function uploadToCloudinary(file: Blob, folder: string) {
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const base64 = `data:${file.type};base64,${buffer.toString('base64')}`;
-
-  return await cloudinary.uploader.upload(base64, {
-    folder,
-    format: 'webp',
-    transformation: [{ width: 300, height: 300, crop: 'fill' }],
-  });
 }

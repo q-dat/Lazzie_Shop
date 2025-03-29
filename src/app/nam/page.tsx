@@ -1,6 +1,8 @@
 'use client';
+
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { IWallet } from '@/models/Wallet';
 import { FaRegHeart } from 'react-icons/fa';
 import { useFavorite } from '../context/FavoriteContext/FavoriteProvider';
@@ -36,21 +38,30 @@ export default function ProductPage() {
       onMouseEnter={() => setHoveredId(selectedVariant?._id)}
       onMouseLeave={() => setHoveredId(null)}
     >
-      <Image
-        src={hoveredId === selectedVariant?._id ? selectedVariant?.thumbnail || selectedVariant?.image : selectedVariant?.image}
-        alt={selectedVariant?.name || 'Hình Ảnh'}
-        fill
-        priority
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        className="h-full w-full object-cover"
-      />
-      <button className="absolute right-1 top-1 cursor-pointer text-lg" onClick={() => toggleFavorite(selectedVariant)}>
-        {favorites.some((fav) => fav._id === selectedVariant?._id) ? (
-          <FaHeart className="text-red-500" />
-        ) : (
-          <FaRegHeart className="text-black hover:text-primary" />
+      <Link href={`/nam/${selectedVariant._id}`}>
+        <Image
+          src={hoveredId === selectedVariant?._id ? selectedVariant?.thumbnail || selectedVariant?.image : selectedVariant?.image}
+          alt={selectedVariant?.name || 'Hình Ảnh'}
+          fill
+          priority
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="h-full w-full object-cover"
+        />
+        {/*  */}
+        <button className="absolute right-1 top-1 cursor-pointer text-lg" onClick={() => toggleFavorite(selectedVariant)}>
+          {favorites.some((fav) => fav._id === selectedVariant?._id) ? (
+            <FaHeart className="text-red-500" />
+          ) : (
+            <FaRegHeart className="text-black hover:text-primary" />
+          )}
+        </button>
+        {/*  */}
+        {hoveredId === selectedVariant._id && (
+          <button className="absolute bottom-0 w-full border border-black bg-white p-1 text-center text-xs font-semibold uppercase">
+          Xem ngay
+          </button>
         )}
-      </button>
+      </Link>
     </div>
   );
 
