@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
       transformation: [{ width: 300, height: 300, crop: 'fill' }],
     });
 
-    let thumbnailUrls: string[] = [];
+    const thumbnailUrls: string[] = [];
 
     if (thumbFiles.length > 0) {
       for (const thumbFile of thumbFiles) {
