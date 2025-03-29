@@ -47,21 +47,20 @@ export default function ProductPage() {
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="h-full w-full object-cover"
         />
-        {/*  */}
-        <button className="absolute right-1 top-1 cursor-pointer text-lg" onClick={() => toggleFavorite(selectedVariant)}>
-          {favorites.some((fav) => fav._id === selectedVariant?._id) ? (
-            <FaHeart className="text-red-500" />
-          ) : (
-            <FaRegHeart className="text-black hover:text-primary" />
-          )}
-        </button>
-        {/*  */}
+
         {hoveredId === selectedVariant._id && (
-          <button className="absolute bottom-0 w-full border border-black bg-white p-1 text-center text-xs font-semibold uppercase">
-          Xem ngay
-          </button>
+          <button className="absolute bottom-0 w-full border border-black bg-white p-1 text-center text-xs font-semibold uppercase">Xem ngay</button>
         )}
       </Link>
+      {/*  */}
+      <button className="absolute right-1 top-1 cursor-pointer text-lg" onClick={() => toggleFavorite(selectedVariant)}>
+        {favorites.some((fav) => fav._id === selectedVariant?._id) ? (
+          <FaHeart className="text-red-500" />
+        ) : (
+          <FaRegHeart className="text-black hover:text-primary" />
+        )}
+      </button>
+      {/*  */}
     </div>
   );
 
