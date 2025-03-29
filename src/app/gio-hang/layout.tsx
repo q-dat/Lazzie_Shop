@@ -1,4 +1,4 @@
-import Header from '@/components/userLayout/Header';
+import Header from "@/components/userLayout/header";
 
 export const metadata = {
   title: 'Ví da nam cao cấp - Lazzie Shop',

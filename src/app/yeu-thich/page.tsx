@@ -23,22 +23,22 @@ export default function FavoritesPage() {
       {localFavorites.length === 0 ? (
         <p className="text-gray-500">Danh sách sản phẩm yêu thích của bạn đang trống!</p>
       ) : (
-        <div className="overflow-x-auto border border-primary">
+        <div className="overflow-x-auto border border-secondary scrollbar-hide">
           <table className="w-full bg-white">
             <thead className="bg-primary text-center text-black">
-              <tr>
-                <th className="border p-3">Hình ảnh</th>
-                <th className="border p-3">Sản phẩm</th>
-                <th className="border p-3">Màu sắc</th>
-                <th className="border p-3">Size</th>
-                <th className="border p-3">Giá</th>
-                <th className="border p-3">Trạng thái</th>
-                <th className="border p-3">Hành động</th>
+              <tr className="divide-x divide-secondary">
+                <th className="p-3">Hình ảnh</th>
+                <th className="p-3">Sản phẩm</th>
+                <th className="p-3">Màu sắc</th>
+                <th className="p-3">Size</th>
+                <th className="p-3">Giá</th>
+                <th className="p-3">Trạng thái</th>
+                <th className="p-3">Hành động</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-secondary">
               {localFavorites.map((item) => (
-                <tr key={item._id} className="border-b text-center">
+                <tr key={item._id} className="text-center">
                   <td className="p-3">
                     <div className="relative mx-auto h-16 w-16">
                       <Image src={item.image || '/fallback-image.jpg'} alt={item.name} layout="fill" objectFit="cover" className="rounded-md" />

@@ -1,4 +1,4 @@
-import Header from '@/components/userLayout/Header';
+import Header from "@/components/userLayout/header";
 
 export const metadata = {
   title: 'Ví da nam cao cấp - Lazzie Shop',
@@ -10,7 +10,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <Header />
-      <div className="mt-[150px] px-2 xl:px-desktop-padding">{children}</div>
+      <div className="mt-[80px] xl:mt-[150px] px-2 xl:px-desktop-padding">{children}</div>
     </div>
   );
 }

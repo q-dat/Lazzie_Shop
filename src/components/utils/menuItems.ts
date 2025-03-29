@@ -7,11 +7,6 @@ interface MenuItem {
   submenu?: { name: string; link: string; icon?: IconType }[];
 }
 const menuItems: MenuItem[] = [
-  // {
-  //   icon: FaHome,
-  //   name: 'Trang Chủ',
-  //   link: '/',
-  // },
   {
     name: 'Nam',
     link: '/nam',

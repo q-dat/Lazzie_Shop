@@ -3,14 +3,15 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import menuItems from '../utils/menuItems';
 import { images } from '@/assets/images';
-import { HiLocationMarker, HiShoppingCart } from 'react-icons/hi';
+import { HiLocationMarker } from 'react-icons/hi';
 import { FaRegHeart } from 'react-icons/fa';
 import { IoLogoFacebook } from 'react-icons/io5';
 import { useFavorite } from '@/app/context/FavoriteContext/FavoriteProvider';
+import { FiShoppingCart } from 'react-icons/fi';
+import menuItems from '@/components/utils/menuItems';
 
-export default function Header() {
+export default function DesktopNavbar() {
   const pathname = usePathname();
   const { favoriteCount } = useFavorite();
   const [activeItem, setActiveItem] = useState<string | null>(null);
@@ -18,9 +19,7 @@ export default function Header() {
 
   useEffect(() => {
     const foundItem = menuItems.find((item) => item.link === pathname || item.submenu?.some((sub) => sub.link === pathname));
-    if (foundItem) {
-      setActiveItem(foundItem.name);
-    }
+    setActiveItem(foundItem ? foundItem.name : null);
   }, [pathname]);
 
   return (
@@ -55,7 +54,7 @@ export default function Header() {
             )}
           </Link>
           <Link href="/gio-hang">
-            <HiShoppingCart />
+            <FiShoppingCart />
           </Link>
         </div>
       </section>
